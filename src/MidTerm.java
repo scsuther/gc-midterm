@@ -10,7 +10,8 @@ public class MidTerm {
 		System.out.println("But following Kai-Yun�s unifying leadership, they paired up and mowed down their foes. One-by-one every last pesky bug fell at the quick hands of the monkeys.\r\n" + 
 				"");
 	
-	
+		System.out.println("makin changes and conflicts");
+		
 	}
 
 }
