@@ -12,7 +12,11 @@ public class MidTerm {
 	
 		System.out.println("makin changes and conflicts");
 		
+<<<<<<< HEAD
 		System.out.println("another change and conflict - maisie");
+=======
+		System.out.println("its new beginning!");
+>>>>>>> b1fa19b92546c3a22e5db572c38f18ad5a04a38c
 		
 	}
 
