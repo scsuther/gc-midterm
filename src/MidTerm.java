@@ -12,6 +12,8 @@ public class MidTerm {
 	
 		System.out.println("makin changes and conflicts");
 		
+		System.out.println("its new beginning!");
+		
 	}
 
 }
