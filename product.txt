@@ -1,0 +1,12 @@
+1~~~Apple~~~Fruit~~~Bag of 12 Honey Crisp~~~2.59
+2~~~Pear~~~Fruit~~~Gold 1lb~~~1.76
+3~~~Banana~~~Fruit~~~1lb~~~2.29
+4~~~Peach~~~Fruit~~~1lb~~~3.35
+5~~~Carrot~~~Vegetable~~~1lb~~~2.00
+6~~~Potato~~~Vegetable~~~1lb~~~1.05
+7~~~Lettuce~~~Vegetable~~~1 head~~~0.89
+8~~~Onion~~~Vegetable~~~1lb~~~0.95
+9~~~Ice Cream~~~Sweets~~~1 quart~~~5.99
+10~~~Cookies~~~Sweets~~~1 dozen~~~3.50
+11~~~Donuts~~~Sweets~~~1 dozen~~~6.50
+12~~~Candy bars~~~Sweets~~~box of 6~~~8.75

@@ -8,111 +8,71 @@ import java.util.*;
 
 public class MidTerm {
 
-	// private static Map<String, Double> items = new TreeMap<>();
-	private static List<Integer> selectByNumber = new ArrayList<>();
-	private static List<String> orderNames = new ArrayList<>();
-	private static List<Double> orderPrices = new ArrayList<>();
-	private static List<Integer> orderItemQty = new ArrayList<>();
-	private static List<Product> orderProduct = new ArrayList<>();
-	private static List<Product> cart = new ArrayList<>();
-	private static Map<Integer, Product> mapItems = new HashMap<>();
+	private static List<Order> orderedProduct = new ArrayList<>();
+	private static List<Product> productList = new ArrayList<>();
 
 	private static Scanner scnr = new Scanner(System.in);
-	private static Path filePath = Paths.get("products.txt");
+	private static Path filePath = Paths.get("product.txt");
+	// private static Order order = null;
 
 	public static void main(String[] args) {
+		boolean valid = false;
+
+		int command = 0;
+
 		try {
-			String decission = "";
 
 			System.out.println("Welcome to the Grocery store! ");
-			// information();
+
 			System.out.println("1-See the list of Products");
 			System.out.println("2-Add a Product");
-			System.out.println("3-Delete a Product");
-			System.out.println("4-Edit a Product");
-			System.out.println("5-Exit");
+			System.out.println("3-Exit");
+			readFile();
 
 			while (true) {
 
 				System.out.println("Enter menu number: ");
-				int command = scnr.nextInt();
-				if (command == 5) {
+				command = scnr.nextInt();
+				if (command == 3) {
 
 					break;
 				} else if (command == 1) {
 
-//					
-					// things.sort((Product c1,Product c2)->
-					// c1.getName().toLowerCase().compareTo(c2.getName().toLowerCase()));
-
 					printMenu();
 					do {
 
-						// fillItemMap();
-						printMenu();
-						// scnr.nextLine();
-						System.out.println("What item would you like to order?");
-						Integer itemNumber = scnr.nextInt();
-						// System.out.println(itemNumber);
+						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
+
 						while (!isItemExists(itemNumber)) {
+							System.out.println(isItemExists(itemNumber));
+							System.out.println(!isItemExists(itemNumber));
 							System.out.println("Sorry, We don't have those. Please try again. ");
 							printMenu();
-							System.out.println("What item would you like to order?");
-
-							itemNumber = scnr.nextInt();
+							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
 
 						}
+						Integer enterQuantity = Validator.getPositiveInt(scnr, "Enter quantity");
 
-						addOrderItem(itemNumber);
-						// Double itemPrice= items.get(itemNumber);
-						// System.out.println("Adding "+itemNumber+" to cart at $"+itemPrice);
-						scnr.nextLine();
-						System.out.println("Would you like to order any thing else (y/n)?");
-						
-						decission = scnr.nextLine();
-						if (decission.equalsIgnoreCase("n")) {
+						addOrderItem(itemNumber, enterQuantity);
 
+						valid = Validator.getYesNo(scnr, "Would you like to order any thing else (y/n)?");
+
+						if (!valid) {
 							System.out.println("Thank you for your order!");
 							System.out.println("Here's what you got.");
+							
 
-							displayOrderItems();
-							/*
-							 * System.out.print("Average price per item in order was ");
-							 * 
-							 * System.out.printf("%.2f", findAverage(orderPrices)); System.out.println();
-							 * int maxIdx = findMax(orderPrices);
-							 * System.out.println("Highest index of cost item : " + maxIdx); int minIdx =
-							 * findMin(orderPrices); System.out.println("Lowest index of cost item : " +
-							 * minIdx); System.out.println("Most expensive item ordered : " +
-							 * orderNames.get(maxIdx)); System.out.println("Least expensive item ordered : "
-							 * + orderNames.get(minIdx));
-							 */
-							// System.exit(0);
-						} else if (decission.equalsIgnoreCase("y")) {
-							// studentDetails();
-						}
-
-						else {
-							throw new Exception();
+							displayOrderItems(itemNumber);
 
 						}
 
-					} while (decission.equalsIgnoreCase("y") || decission.equalsIgnoreCase("n"));
-					/*
-					 * } catch (InputMismatchException e) { System.out.println("input mismatch"); }
-					 */
-					// scnr.close();
-
-					// }
+					} while (valid);
 
 				} else if (command == 2) {
 					Product Product = getProductFromUser(scnr);
 					System.out.println("Adding " + Product);
 					appendLineToFile(Product);
-				} /*
-					 * else if (command == 3) { // deleteProduct(); } else if (command == 4) { //
-					 * editProduct(); }
-					 */ else {
+				} else {
 					System.out.println("Invalid command.");
 				}
 			}
@@ -125,55 +85,18 @@ public class MidTerm {
 		}
 
 	}
-	/*
-	 * private static void deleteProduct() {
-	 * 
-	 * List<Product> things = readFile(); scnr.nextLine();
-	 * 
-	 * String Product = Validator.getString(scnr, "Enter Product: ");
-	 * 
-	 * for (int i = 0; i < things.size(); i++) {
-	 * 
-	 * if (things.get(i).getName().equalsIgnoreCase(Product)) { Product
-	 * removeProduct = things.get(i); things.remove(i);
-	 * System.out.println("Deleting " + removeProduct);
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * // things.stream().filter(i ->i.getName().equals("")); try {
-	 * Files.newBufferedWriter(filePath, StandardOpenOption.TRUNCATE_EXISTING);
-	 * Files.newInputStream(filePath, StandardOpenOption.TRUNCATE_EXISTING); for
-	 * (Product thing : things) { appendLineToFile(thing); }
-	 * 
-	 * } catch (IOException e) { System.out.println("Unable to write to file."); } }
-	 * 
-	 * private static void editProduct() { scnr.nextLine(); String Product =
-	 * Validator.getString(scnr, "Enter Product: "); int population =
-	 * Validator.getInt(scnr, "Enter population: "); List<Product> things =
-	 * readFile(); for (Product thing : things) { if
-	 * (thing.getName().equalsIgnoreCase(Product)) { thing.setPrice(population);
-	 * System.out.println("Modifying " + thing);
-	 * 
-	 * } } try { Files.newBufferedWriter(filePath,
-	 * StandardOpenOption.TRUNCATE_EXISTING); Files.newInputStream(filePath,
-	 * StandardOpenOption.TRUNCATE_EXISTING); for (Product thing : things) {
-	 * appendLineToFile(thing); }
-	 * 
-	 * } catch (IOException e) { System.out.println("Unable to write to file."); } }
-	 */
 
 	private static Product getProductFromUser(Scanner scnr) {
 		scnr.nextLine();
-		// TODO #1 adjust this for your class, not Product
-		String Product = Validator.getString(scnr, "Enter Product: ");
+
+		int id = Validator.getInt(scnr, "Enter id: ");
+		String name = Validator.getString(scnr, "Enter Product: ");
 		String category = Validator.getString(scnr, "Enter Category: ");
-		String descnription = Validator.getString(scnr, "Enter Descnription: ");
+		String description = Validator.getString(scnr, "Enter Description: ");
 
 		double price = Validator.getDouble(scnr, "Enter price: ");
 
-		return new Product(Product, category, descnription, price);
+		return new Product(id, name, category, description, price);
 	}
 
 	/**
@@ -183,29 +106,21 @@ public class MidTerm {
 		try {
 			List<String> lines = Files.readAllLines(filePath);
 
-			// TODO #2 Add code here@@@ convert this list of String lines from
-			// the file to a list of our objects. (Product, in my case)// TODO #2 Add code
-			// here@@@ convert this list of String lines from
-			// the file to a list of our objects. (Player, in my case)
-
 			for (String line : lines) {
-				// System.out.println(line);
+
 				String[] parts = line.split("~~~");
-				// #2 select each part based on index position and convert in to a correct data
-				// type
-				// System.out.println(Arrays.toString(parts));
-				String Product = parts[0];
-				String category = parts[1];
-				String descnription = parts[2];
 
-				double price = Double.parseDouble(parts[3]);
+				int id = Integer.parseInt(parts[0]);
+				String name = parts[1];
+				String category = parts[2];
+				String descnription = parts[3];
 
-				cart.add(new Product(Product, category, descnription, price));
-				// Map<Integer,Product> items = new HashMap<>();
-				// tems.compute();
+				double price = Double.parseDouble(parts[4]);
+
+				productList.add(new Product(id, name, category, descnription, price));
 
 			}
-			return cart;
+			return productList;
 		} catch (IOException e) {
 			System.out.println("Unable to read file.");
 			return new ArrayList<>();
@@ -214,21 +129,17 @@ public class MidTerm {
 
 	public static void printMenu() {
 		int i = 1;
-		List<Product> things = readFile();
 
-		for (Product thing : things) {
+		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "Id", "Name", "Category", "Description", "Price");
+		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "==", "====", "=======", "=========", "=====");
+
+		for (Product thing : productList) {
 			// ObjectComparator comparator = new ObjectComparator();
 			// Collections.sort(things, comparator);
 			// System.out.println(i++ + ". " + thing);
 
-			mapItems.put(i++, thing);
-
-			for (Map.Entry<Integer, Product> entry : mapItems.entrySet()) {
-				// System.out.println(entry.getKey()+"\t\t\t\t"+entry.getValue());
-				// System.out.printf("%-20s%20.2f%n", entry.getKey(), entry.getValue());
-				System.out.println(
-						entry.getKey() + " " + entry.getValue().getName() + "  " + entry.getValue().getPrice());
-			}
+			System.out.printf("%-10d%-10s%-10s%-25s%-1s%-10.2f%n", thing.getId(), thing.getName(), thing.getCategory(),
+					thing.getDescription(), "$", thing.getPrice());
 
 		}
 
@@ -240,14 +151,11 @@ public class MidTerm {
 	public static void appendLineToFile(Product thing) {
 		String line = "TODO";
 
-		// TODO #3 add code here@@@ convert your object to a string like
-		// it should be as a line in the file. store it in the `line` variable.
-		line = thing.getName() + "~~~" + thing.getCategory() + "~~~" + thing.getDescription() + "~~~"
-				+ thing.getPrice();
-		line = String.format("%s~~~%s~~~%s~~~%f", thing.getName(), thing.getCategory(), thing.getDescription(),
-				thing.getPrice());
-		// line=thing.toString
-		// Files.write requires a list of lines. Create a list of one line.
+		line = thing.getId() + "~~~" + thing.getName() + "~~~" + thing.getCategory() + "~~~" + thing.getDescription()
+				+ "~~~" + thing.getPrice();
+		line = String.format("%d~~~%s~~~%s~~~%s~~~%f", thing.getId(), thing.getName(), thing.getCategory(),
+				thing.getDescription(), thing.getPrice());
+
 		List<String> lines = Collections.singletonList(line);
 		try {
 			Files.write(filePath, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
@@ -256,78 +164,90 @@ public class MidTerm {
 		}
 	}
 
-	private static void addOrderItem(int itemNumber) {
-		Product itemProduct = mapItems.get(itemNumber);
-		String itemName = mapItems.get(itemNumber).getName();
-		Double itemPrice = mapItems.get(itemNumber).getPrice();
-		// Integer itemNumber = mapItems.get(ke)
+	private static void addOrderItem(int itemNumber, int enterQuantity) {
 
-		System.out.println("Adding " + itemName + " to cart at $" + itemPrice);
-		selectByNumber.add(itemNumber);
-		orderNames.add(itemName);
-		orderPrices.add(itemPrice);
-		addOrderQty(itemNumber);
+		boolean isItemExistsInproductList = false;
 
-	}
+		int itemIndexNumber = itemNumber - 1;
 
-	private static void addOrderQty(int itemNumber) {
+		for (int i = 0; i < orderedProduct.size(); i++) {
 
-		// int itemIdx = orderNames.indexOf(itemNumber);
-		int itemIdx = itemNumber;
-		int count = Collections.frequency(selectByNumber, itemNumber);
+			if (orderedProduct.get(i).getId() == itemNumber) {
+				isItemExistsInproductList = true;
+				int quantity = orderedProduct.get(i).getQuantity();
+				// double price = orderedProduct.get(i).getPrice();
+				// System.out.println("quantity" + quantity);
+				// quantity++;
+				double price = productList.get(itemIndexNumber).getPrice();
+				quantity = quantity + enterQuantity;
 
-		try {
-			orderItemQty.get(itemIdx);
-			orderItemQty.set(itemIdx, count);
-		} catch (IndexOutOfBoundsException e) {
+				orderedProduct.get(i).setQuantity(quantity);
+				orderedProduct.get(i).setPrice(price * quantity);
 
-			orderItemQty.add(count);
-		}
-
-	}
-
-	private static void displayOrderItems() {
-		ArrayList<Integer> distinctOrderNumbers = new ArrayList<>();
-
-		for (int orderItemNumber : selectByNumber) {
-
-			// If this element is not present in distinctOrderNames
-			// then add it
-			if (!distinctOrderNumbers.contains(orderItemNumber)) {
-
-				distinctOrderNumbers.add(orderItemNumber);
 			}
 		}
 
-		for (int orderItemNumber : distinctOrderNumbers) {
-			Double itemPrice = mapItems.get(orderItemNumber).getPrice();
-			int itemIdx = distinctOrderNumbers.get(orderItemNumber);// orderItemNumber;
-			int itemQty = orderItemQty.get(itemIdx);
-			String itemName = orderNames.get(orderItemNumber);
-			System.out.println(orderItemNumber + " " + itemName + " " + "$" + itemPrice + " " + itemQty);
-			// String item = "$"+itemPrice;
-			// System.out.printf("%-20s%20.2f%s%n",orderItemName,itemPrice,"$");
-			// System.out.printf("%-10s%-1s%-10.2f%n%-10d%n", orderItemName, "$",
-			// itemPrice,itemQty);
-			// System.out.println();
-			// System.out.println("ItemQty " + itemQty);
+		if (!isItemExistsInproductList) {
+
+			Order order = new Order(productList.get(itemIndexNumber).getId(),
+					productList.get(itemIndexNumber).getName(), productList.get(itemIndexNumber).getCategory(),
+					productList.get(itemIndexNumber).getDescription(),
+					productList.get(itemIndexNumber).getPrice() * enterQuantity, enterQuantity);
+			orderedProduct.add(order);
 		}
+
+		System.out.println("Adding " + productList.get(itemIndexNumber).getName() + " to productList at $"
+				+ productList.get(itemIndexNumber).getPrice());
+
+	}
+
+	public static void displayOrderItems(int itemNumber) {
+		double subtotal = 0;
+		double tax = 6;
+		double taxtotal = 0;
+		double grandtotal = 0;
+		System.out.println("Your Order productList Items: ");
+		System.out.println();
+		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Quantity", "Price");
+		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "========", "=====");
+		// System.out.println("==========================");
+
+		for (Order order : orderedProduct) {
+
+			System.out.printf("%-10d%-10s%-10d%-1s%-20.2f%n", order.getId(), order.getName(), order.getQuantity(), "$",
+					order.getPrice());
+			subtotal = subtotal + order.getPrice();
+		}
+		taxtotal = (subtotal * tax) / 100;
+		grandtotal = subtotal + taxtotal;
+		System.out.println();
+		System.out.println("=================================");
+		System.out.print("subtotal: ");
+		System.out.printf("%.2f%n", subtotal);
+		System.out.print("%tax at " + tax + "% ");
+		System.out.printf("%.2f%n", taxtotal);
+		System.out.print("grandtotal: ");
+		System.out.printf("%.2f%n", grandtotal);
+
 	}
 
 	private static boolean isItemExists(int itemNumber) {
 		boolean isExists = false;
-		// System.out.println(items.containsKey(itemName));
 
-		isExists = mapItems.containsKey(itemNumber);
+		for (int i = 0; i < productList.size(); i++) {
+			if (productList.get(i).getId() == itemNumber) {
+				isExists = true;
+			}
+
+		}
 		return isExists;
 	}
 
-	/*class ObjectComparator implements Comparator<Product> {
+	/*
+	 * class ObjectComparator implements Comparator<Product> {
+	 * 
+	 * public int compare(Product obj1, Product obj2) { return
+	 * obj1.getName().toLowerCase().compareTo(obj2.getName().toLowerCase()); }
+	 */
 
-		public int compare(Product obj1, Product obj2) {
-			return obj1.getName().toLowerCase().compareTo(obj2.getName().toLowerCase());
-		}*/
-
-	}
-		
-
+}
