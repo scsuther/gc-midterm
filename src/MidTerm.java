@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,11 +8,10 @@ import java.util.*;
 public class MidTerm {
 
 	private static List<Order> orderedProduct = new ArrayList<>();
-	private static List<Product> productList = new ArrayList<>();
-
+	private static Map<Integer, String> payType = new TreeMap<>();
 	private static Scanner scnr = new Scanner(System.in);
 	private static Path filePath = Paths.get("product.txt");
-	// private static Order order = null;
+	private static Map<Integer, Product> productList = new TreeMap<>();
 
 	public static void main(String[] args) {
 		boolean valid = false;
@@ -31,14 +29,16 @@ public class MidTerm {
 
 			while (true) {
 
-				System.out.println("Enter menu number: ");
-				command = scnr.nextInt();
+//				System.out.println("Enter menu number: ");
+//				command = scnr.nextInt();
+				  command = Validator.getPositiveInt(scnr, "Enter menu number: ");
 				if (command == 3) {
 
 					break;
 				} else if (command == 1) {
 
 					printMenu();
+					// listOfProducts();
 					do {
 
 						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
@@ -48,6 +48,7 @@ public class MidTerm {
 							System.out.println(!isItemExists(itemNumber));
 							System.out.println("Sorry, We don't have those. Please try again. ");
 							printMenu();
+							// listOfProducts();
 							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
 
 						}
@@ -60,7 +61,8 @@ public class MidTerm {
 						if (!valid) {
 							System.out.println("Thank you for your order!");
 							System.out.println("Here's what you got.");
-							
+
+
 
 							displayOrderItems(itemNumber);
 
@@ -102,10 +104,10 @@ public class MidTerm {
 	/**
 	 * Read all the objects from a file and store them in a List.
 	 */
-	public static List<Product> readFile() {
+	public static Map<Integer, Product> readFile() {
 		try {
 			List<String> lines = Files.readAllLines(filePath);
-
+			int i = 1;
 			for (String line : lines) {
 
 				String[] parts = line.split("~~~");
@@ -117,33 +119,33 @@ public class MidTerm {
 
 				double price = Double.parseDouble(parts[4]);
 
-				productList.add(new Product(id, name, category, descnription, price));
+				productList.put(i++, new Product(id, name, category, descnription, price));
 
 			}
 			return productList;
 		} catch (IOException e) {
 			System.out.println("Unable to read file.");
-			return new ArrayList<>();
+			return new TreeMap<>();
 		}
 	}
 
 	public static void printMenu() {
-		int i = 1;
+		 
 
 		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "Id", "Name", "Category", "Description", "Price");
 		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "==", "====", "=======", "=========", "=====");
+ 
 
-		for (Product thing : productList) {
-			// ObjectComparator comparator = new ObjectComparator();
-			// Collections.sort(things, comparator);
-			// System.out.println(i++ + ". " + thing);
+		for (Map.Entry<Integer, Product> entry : productList.entrySet()) {
 
-			System.out.printf("%-10d%-10s%-10s%-25s%-1s%-10.2f%n", thing.getId(), thing.getName(), thing.getCategory(),
-					thing.getDescription(), "$", thing.getPrice());
+			System.out.printf("%-10d%-10s%-10s%-25s%-1s%-10.2f%n", entry.getKey(), entry.getValue().getName(),
+					entry.getValue().getCategory(), entry.getValue().getDescription(), "$",
+					entry.getValue().getPrice());
 
 		}
 
 	}
+ 
 
 	/**
 	 * Add an object to the end of the file.
@@ -168,17 +170,14 @@ public class MidTerm {
 
 		boolean isItemExistsInproductList = false;
 
-		int itemIndexNumber = itemNumber - 1;
-
+		
 		for (int i = 0; i < orderedProduct.size(); i++) {
 
 			if (orderedProduct.get(i).getId() == itemNumber) {
 				isItemExistsInproductList = true;
 				int quantity = orderedProduct.get(i).getQuantity();
-				// double price = orderedProduct.get(i).getPrice();
-				// System.out.println("quantity" + quantity);
-				// quantity++;
-				double price = productList.get(itemIndexNumber).getPrice();
+				
+				double price = productList.get(itemNumber).getPrice();
 				quantity = quantity + enterQuantity;
 
 				orderedProduct.get(i).setQuantity(quantity);
@@ -188,16 +187,15 @@ public class MidTerm {
 		}
 
 		if (!isItemExistsInproductList) {
-
-			Order order = new Order(productList.get(itemIndexNumber).getId(),
-					productList.get(itemIndexNumber).getName(), productList.get(itemIndexNumber).getCategory(),
-					productList.get(itemIndexNumber).getDescription(),
-					productList.get(itemIndexNumber).getPrice() * enterQuantity, enterQuantity);
+ 
+			Order order = new Order(productList.get(itemNumber).getId(), productList.get(itemNumber).getName(),
+					productList.get(itemNumber).getCategory(), productList.get(itemNumber).getDescription(),
+					productList.get(itemNumber).getPrice() * enterQuantity, enterQuantity);
 			orderedProduct.add(order);
 		}
 
-		System.out.println("Adding " + productList.get(itemIndexNumber).getName() + " to productList at $"
-				+ productList.get(itemIndexNumber).getPrice());
+		System.out.println("Adding " + productList.get(itemNumber).getName() + " to productList at $"
+				+ productList.get(itemNumber).getPrice());
 
 	}
 
@@ -207,47 +205,35 @@ public class MidTerm {
 		double taxtotal = 0;
 		double grandtotal = 0;
 		System.out.println("Your Order productList Items: ");
-		System.out.println();
-		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Quantity", "Price");
-		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "========", "=====");
+		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Price", "Quantity");
+		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "=====", "========");
 		// System.out.println("==========================");
 
 		for (Order order : orderedProduct) {
 
-			System.out.printf("%-10d%-10s%-10d%-1s%-20.2f%n", order.getId(), order.getName(), order.getQuantity(), "$",
-					order.getPrice());
+			System.out.printf("%-10d%-10s%-1s%-20.2f%-10d%n", order.getId(), order.getName(), "$", order.getPrice(),
+					order.getQuantity());
 			subtotal = subtotal + order.getPrice();
 		}
 		taxtotal = (subtotal * tax) / 100;
 		grandtotal = subtotal + taxtotal;
 		System.out.println();
-		System.out.println("=================================");
+		// System.out.println("subtotal: " + subtotal);
 		System.out.print("subtotal: ");
 		System.out.printf("%.2f%n", subtotal);
-		System.out.print("%tax at " + tax + "% ");
+		System.out.print("%tax at " + tax + "% : ");
 		System.out.printf("%.2f%n", taxtotal);
 		System.out.print("grandtotal: ");
 		System.out.printf("%.2f%n", grandtotal);
-
+		
 	}
 
 	private static boolean isItemExists(int itemNumber) {
 		boolean isExists = false;
 
-		for (int i = 0; i < productList.size(); i++) {
-			if (productList.get(i).getId() == itemNumber) {
-				isExists = true;
-			}
+		isExists= productList.containsKey(itemNumber);
 
-		}
 		return isExists;
 	}
-
-	/*
-	 * class ObjectComparator implements Comparator<Product> {
-	 * 
-	 * public int compare(Product obj1, Product obj2) { return
-	 * obj1.getName().toLowerCase().compareTo(obj2.getName().toLowerCase()); }
-	 */
 
 }
