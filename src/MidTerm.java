@@ -1,8 +1,12 @@
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MidTerm {
@@ -31,24 +35,24 @@ public class MidTerm {
 
 //				System.out.println("Enter menu number: ");
 //				command = scnr.nextInt();
-				  command = Validator.getPositiveInt(scnr, "Enter menu number: ");
+				command = Validator.getPositiveInt(scnr, "Enter menu number: ");
 				if (command == 3) {
 
 					break;
 				} else if (command == 1) {
 
 					printMenu();
-					// listOfProducts();
+
 					do {
 
 						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
 
 						while (!isItemExists(itemNumber)) {
-							System.out.println(isItemExists(itemNumber));
-							System.out.println(!isItemExists(itemNumber));
+							// System.out.println(isItemExists(itemNumber));
+							// System.out.println(!isItemExists(itemNumber));
 							System.out.println("Sorry, We don't have those. Please try again. ");
 							printMenu();
-							// listOfProducts();
+
 							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
 
 						}
@@ -62,10 +66,24 @@ public class MidTerm {
 							System.out.println("Thank you for your order!");
 							System.out.println("Here's what you got.");
 
+							double amount = displayOrderItems(itemNumber);
+							boolean decission = Validator.getYesNo(scnr, "would you like to pay the bill (y/n)? ");
+							if (decission) {
 
+								payType();
+								System.out.println("How would you like to pay? ");
+								int payId = scnr.nextInt();
+								if (payId == 1) {
+									cash(amount);
 
-							displayOrderItems(itemNumber);
+								} else if (payId == 2) {
+									credit(amount);
 
+								} else if (payId == 3) {
+									check(amount);
+
+								}
+							}
 						}
 
 					} while (valid);
@@ -73,7 +91,7 @@ public class MidTerm {
 				} else if (command == 2) {
 					Product Product = getProductFromUser(scnr);
 					System.out.println("Adding " + Product);
-					appendLineToFile(Product);
+					// appendLineToFile(Product);
 				} else {
 					System.out.println("Invalid command.");
 				}
@@ -91,7 +109,8 @@ public class MidTerm {
 	private static Product getProductFromUser(Scanner scnr) {
 		scnr.nextLine();
 
-		int id = Validator.getInt(scnr, "Enter id: ");
+		// int id = Validator.getInt(scnr, "Enter id: ");
+		int id = productList.size() + 1;
 		String name = Validator.getString(scnr, "Enter Product: ");
 		String category = Validator.getString(scnr, "Enter Category: ");
 		String description = Validator.getString(scnr, "Enter Description: ");
@@ -130,11 +149,9 @@ public class MidTerm {
 	}
 
 	public static void printMenu() {
-		 
 
 		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "Id", "Name", "Category", "Description", "Price");
 		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "==", "====", "=======", "=========", "=====");
- 
 
 		for (Map.Entry<Integer, Product> entry : productList.entrySet()) {
 
@@ -145,7 +162,6 @@ public class MidTerm {
 		}
 
 	}
- 
 
 	/**
 	 * Add an object to the end of the file.
@@ -170,13 +186,12 @@ public class MidTerm {
 
 		boolean isItemExistsInproductList = false;
 
-		
 		for (int i = 0; i < orderedProduct.size(); i++) {
 
 			if (orderedProduct.get(i).getId() == itemNumber) {
 				isItemExistsInproductList = true;
 				int quantity = orderedProduct.get(i).getQuantity();
-				
+
 				double price = productList.get(itemNumber).getPrice();
 				quantity = quantity + enterQuantity;
 
@@ -187,7 +202,7 @@ public class MidTerm {
 		}
 
 		if (!isItemExistsInproductList) {
- 
+
 			Order order = new Order(productList.get(itemNumber).getId(), productList.get(itemNumber).getName(),
 					productList.get(itemNumber).getCategory(), productList.get(itemNumber).getDescription(),
 					productList.get(itemNumber).getPrice() * enterQuantity, enterQuantity);
@@ -199,41 +214,117 @@ public class MidTerm {
 
 	}
 
-	public static void displayOrderItems(int itemNumber) {
+	public static double displayOrderItems(int itemNumber) {
 		double subtotal = 0;
 		double tax = 6;
 		double taxtotal = 0;
 		double grandtotal = 0;
 		System.out.println("Your Order productList Items: ");
-		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Price", "Quantity");
+		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Quantity", "Price");
 		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "=====", "========");
 		// System.out.println("==========================");
 
 		for (Order order : orderedProduct) {
 
-			System.out.printf("%-10d%-10s%-1s%-20.2f%-10d%n", order.getId(), order.getName(), "$", order.getPrice(),
-					order.getQuantity());
-			subtotal = subtotal + order.getPrice();
+			System.out.printf("%-10d%-10s%-10d%-1s%-20.2f%n", order.getId(), order.getName(), order.getQuantity(), "$",
+					order.getPrice());
+			subtotal = mathRound(subtotal + order.getPrice());
 		}
 		taxtotal = (subtotal * tax) / 100;
+
+		// System.out.println(taxtotal);
+		// taxtotal=mathRound(taxtotal);
 		grandtotal = subtotal + taxtotal;
+		grandtotal = mathRound(grandtotal);
 		System.out.println();
 		// System.out.println("subtotal: " + subtotal);
-		System.out.print("subtotal: ");
-		System.out.printf("%.2f%n", subtotal);
+		System.out.println("subtotal: " + subtotal);
+		// System.out.printf("%.2f%n", subtotal);
 		System.out.print("%tax at " + tax + "% : ");
 		System.out.printf("%.2f%n", taxtotal);
-		System.out.print("grandtotal: ");
-		System.out.printf("%.2f%n", grandtotal);
-		
+		System.out.println("grandtotal: " + grandtotal);
+		// System.out.printf("%.2f%n", grandtotal);
+		return grandtotal;
+	}
+
+	private static double mathRound(double value) {
+		double roundValue = Math.round((value * 100.0) / 100);
+		return roundValue;
 	}
 
 	private static boolean isItemExists(int itemNumber) {
 		boolean isExists = false;
 
-		isExists= productList.containsKey(itemNumber);
+		isExists = productList.containsKey(itemNumber);
 
 		return isExists;
+	}
+
+	public static void payType() {
+		payType.put(1, "cash");
+		payType.put(2, "credit");
+		payType.put(3, "check");
+		System.out.printf("%-20s%-20s%n", "paymentId", "paymentType");
+		System.out.printf("%-20s%-20s%n", "=========", "===========");
+		for (Map.Entry<Integer, String> entry : payType.entrySet()) {
+
+			System.out.printf("%-20d%-20s%n", entry.getKey(), entry.getValue());
+		}
+	}
+
+	public static void credit(double amount) {
+		Credit credit = new Credit();
+		credit.setAmount(amount);
+
+		long creditNum = credit.validateCreditAndCVVNumber(scnr, "enter credit card number : ", 16,
+				"You must enter a valid 16 digit credit card number.");
+
+		credit.setCreditCardNumber(creditNum);
+
+		int cvv = (int) (credit.validateCreditAndCVVNumber(scnr, "enter credit CVV :", 3,
+				"You must enter a valid 3 digit CVV number."));
+
+		credit.setCvv(cvv);
+
+		String expdate = credit.validateExpiryDate(scnr, "enter credit expire date :");
+
+		credit.setExpdate(expdate);
+
+		credit.pay(amount);
+		System.out.println(credit.toString());
+	}
+
+	public static void cash(double amount) {
+		Cash cash = new Cash();
+		cash.setAmount(amount);
+
+		double money = Validator.getDouble(scnr, "give cash of " + amount + " ");
+
+		while (money < amount) {
+			System.out.println("money is not sufficient, please pay " + amount);
+			System.out.print("give cash of " + amount + ": ");
+			money = Validator.getDouble(scnr, "give cash of " + amount + " ");
+		}
+
+		cash.setRecivedAmount(money);
+		double change = cash.pay(amount);
+		change = mathRound(change);
+		System.out.println("please take your change " + change);
+		// System.out.printf("%.2f%n", change);
+		System.out.println(cash.toString());
+
+	}
+
+	public static void check(double amount) {
+		System.out.print("please enter check number : ");
+
+		String checkNum = scnr.next();
+
+		Check check = new Check();
+		check.setAmount(amount);
+
+		check.setCheckNumber(checkNum);
+		System.out.println(check.toString());
 	}
 
 }

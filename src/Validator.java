@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
-public class Validator 
+public class Validator
 
-	{
-	
+{
+
 	public static String getString(Scanner scnr, String prompt) {
 		System.out.print(prompt);
 		return scnr.nextLine();
@@ -15,8 +15,7 @@ public class Validator
 		while (!scnr.hasNextInt()) {
 			scnr.nextLine(); // <-- clear out the bad input that they already
 								// typed
-			System.out
-					.println("That is not a valid integer. Please try again.");
+			System.out.println("That is not a valid integer. Please try again.");
 			System.out.print(prompt);
 		}
 		int input = scnr.nextInt();
@@ -56,14 +55,13 @@ public class Validator
 		do {
 			System.out.println(prompt);
 			input = scnr.nextLine();
-			isValid = "yes".equalsIgnoreCase(input) ||
-					"no".equalsIgnoreCase(input) || "y".equalsIgnoreCase(input)
+			isValid = "yes".equalsIgnoreCase(input) || "no".equalsIgnoreCase(input) || "y".equalsIgnoreCase(input)
 					|| "n".equalsIgnoreCase(input);
 			if (!isValid) {
 				System.out.println("Invalid response. Enter yes or no.");
 			}
 		} while (!isValid);
-		
+
 		return input.toLowerCase().startsWith("y");
 	}
 
