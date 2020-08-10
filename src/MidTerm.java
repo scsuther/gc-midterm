@@ -45,7 +45,7 @@ public class MidTerm {
 
 					do {
 
-						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
+						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order? (Enter item ID)");
 
 						while (!isItemExists(itemNumber)) {
 							// System.out.println(isItemExists(itemNumber));
@@ -53,10 +53,10 @@ public class MidTerm {
 							System.out.println("Sorry, We don't have those. Please try again. ");
 							printMenu();
 
-							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
+							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order? (Enter item ID)");
 
 						}
-						Integer enterQuantity = Validator.getPositiveInt(scnr, "Enter quantity");
+						Integer enterQuantity = Validator.getPositiveInt(scnr, "Enter quantity: ");
 
 						addOrderItem(itemNumber, enterQuantity);
 
@@ -64,10 +64,10 @@ public class MidTerm {
 
 						if (!valid) {
 							System.out.println("Thank you for your order!");
-							System.out.println("Here's what you got.");
+							System.out.println("Here's whats in your cart:");
 
 							double amount = displayOrderItems(itemNumber);
-							boolean decission = Validator.getYesNo(scnr, "would you like to pay the bill (y/n)? ");
+							boolean decission = Validator.getYesNo(scnr, "Are you ready to pay the bill? (y/n) ");
 							if (decission) {
 
 								payType();
@@ -167,7 +167,7 @@ public class MidTerm {
 	 * Add an object to the end of the file.
 	 */
 	public static void appendLineToFile(Product thing) {
-		String line = "TODO";
+		String line = "";
 
 		line = thing.getId() + "~~~" + thing.getName() + "~~~" + thing.getCategory() + "~~~" + thing.getDescription()
 				+ "~~~" + thing.getPrice();
@@ -209,7 +209,7 @@ public class MidTerm {
 			orderedProduct.add(order);
 		}
 
-		System.out.println("Adding " + productList.get(itemNumber).getName() + " to productList at $"
+		System.out.println("Adding " + productList.get(itemNumber).getName() + " to order at $"
 				+ productList.get(itemNumber).getPrice());
 
 	}
@@ -219,10 +219,9 @@ public class MidTerm {
 		double tax = 6;
 		double taxtotal = 0;
 		double grandtotal = 0;
-		System.out.println("Your Order productList Items: ");
 		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Quantity", "Price");
-		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "=====", "========");
-		// System.out.println("==========================");
+		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "========", "=====");
+		
 
 		for (Order order : orderedProduct) {
 
@@ -232,18 +231,14 @@ public class MidTerm {
 		}
 		taxtotal = (subtotal * tax) / 100;
 
-		// System.out.println(taxtotal);
-		// taxtotal=mathRound(taxtotal);
+		
 		grandtotal = subtotal + taxtotal;
 		grandtotal = mathRound(grandtotal);
 		System.out.println();
-		// System.out.println("subtotal: " + subtotal);
-		System.out.println("subtotal: " + subtotal);
-		// System.out.printf("%.2f%n", subtotal);
+		System.out.println("Subtotal: " + subtotal);
 		System.out.print("%tax at " + tax + "% : ");
 		System.out.printf("%.2f%n", taxtotal);
-		System.out.println("grandtotal: " + grandtotal);
-		// System.out.printf("%.2f%n", grandtotal);
+		System.out.println("Grand total: " + grandtotal);
 		return grandtotal;
 	}
 
@@ -261,9 +256,9 @@ public class MidTerm {
 	}
 
 	public static void payType() {
-		payType.put(1, "cash");
-		payType.put(2, "credit");
-		payType.put(3, "check");
+		payType.put(1, "Cash");
+		payType.put(2, "Credit");
+		payType.put(3, "Check");
 		System.out.printf("%-20s%-20s%n", "paymentId", "paymentType");
 		System.out.printf("%-20s%-20s%n", "=========", "===========");
 		for (Map.Entry<Integer, String> entry : payType.entrySet()) {
@@ -276,17 +271,17 @@ public class MidTerm {
 		Credit credit = new Credit();
 		credit.setAmount(amount);
 
-		long creditNum = credit.validateCreditAndCVVNumber(scnr, "enter credit card number : ", 16,
+		long creditNum = credit.validateCreditAndCVVNumber(scnr, "Enter credit card number : ", 16,
 				"You must enter a valid 16 digit credit card number.");
 
 		credit.setCreditCardNumber(creditNum);
 
-		int cvv = (int) (credit.validateCreditAndCVVNumber(scnr, "enter credit CVV :", 3,
+		int cvv = (int) (credit.validateCreditAndCVVNumber(scnr, "Enter credit CVV :", 3,
 				"You must enter a valid 3 digit CVV number."));
 
 		credit.setCvv(cvv);
 
-		String expdate = credit.validateExpiryDate(scnr, "enter credit expire date :");
+		String expdate = credit.validateExpiryDate(scnr, "Enter credit expire date (mm/dd/yyyy) :");
 
 		credit.setExpdate(expdate);
 
@@ -298,25 +293,24 @@ public class MidTerm {
 		Cash cash = new Cash();
 		cash.setAmount(amount);
 
-		double money = Validator.getDouble(scnr, "give cash of " + amount + " ");
+		double money = Validator.getDouble(scnr, "Amount due: " + amount + " ");
 
 		while (money < amount) {
-			System.out.println("money is not sufficient, please pay " + amount);
-			System.out.print("give cash of " + amount + ": ");
-			money = Validator.getDouble(scnr, "give cash of " + amount + " ");
+			System.out.println("Money is not sufficient, please pay " + amount);
+			System.out.print("Amount due: " + amount + ": ");
+			money = Validator.getDouble(scnr, "Amount due: " + amount + " ");
 		}
 
 		cash.setRecivedAmount(money);
 		double change = cash.pay(amount);
 		change = mathRound(change);
-		System.out.println("please take your change " + change);
-		// System.out.printf("%.2f%n", change);
+		System.out.println("Please take your change " + change);
 		System.out.println(cash.toString());
 
 	}
 
 	public static void check(double amount) {
-		System.out.print("please enter check number : ");
+		System.out.print("Please enter check number : ");
 
 		String checkNum = scnr.next();
 
