@@ -4,19 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Credit extends Payment {
+public class CreditCardPayment extends Payment {
 	private long creditCardNumber;
 	private String expdate;
 	private int cvv;
 
-	public Credit(double amount, int creditCardNumber, String expdate, int cvv) {
+	public CreditCardPayment(double amount, int creditCardNumber, String expdate, int cvv) {
 		super(amount);
 		this.creditCardNumber = creditCardNumber;
 		this.expdate = expdate;
 		this.cvv = cvv;
 	}
 
-	public Credit() {
+	public CreditCardPayment() {
 		super();
 	}
 
@@ -70,7 +70,7 @@ public class Credit extends Payment {
 		return input;
 	}
 
-	public static String validateExpiryDate(Scanner scnr, String prompt) {
+	public static String validateExpireDate(Scanner scnr, String prompt) {
 
 		String input = "";
 
@@ -91,10 +91,6 @@ public class Credit extends Payment {
 					Date inputDate = new Date(input);
 					Date date = new Date();
 
-//			System.out.println(inputDate.compareTo(date));
-//			System.out.println(inputDate);
-//			System.out.println(date);
-
 					if ((inputDate.compareTo(date)) >= 0) {
 						isValid = true;
 					} else {
@@ -102,7 +98,7 @@ public class Credit extends Payment {
 					}
 
 				} catch (ParseException e) {
-					// return false;
+					
 					isValid = false;
 				}
 
@@ -117,17 +113,16 @@ public class Credit extends Payment {
 
 	@Override
 	public String toString() {
-		
-		String c = String.valueOf(creditCardNumber);
-		String mask=c.replaceAll("[^\\d\\+]", "").replaceAll("\\d(?=\\d{4})", "*");
-		
-		return "Credit [creditCardNumber=" + mask+ ", expdate=" + expdate + ", CVV=" + cvv + ", amount=" + amount
-				+ "]";
+
+		String ccn = String.valueOf(creditCardNumber);
+		String mask = ccn.replaceAll("[^\\d\\+]", "").replaceAll("\\d(?=\\d{4})", "*");
+
+		return "Credit card number = " + mask + "\n" + "Expiration date = " + expdate + "\n" + "CVV = " + cvv + "\n" + "Amount = " + amount;
 	}
 
 	@Override
 	double pay(double amount) {
-		// TODO Auto-generated method stub
+
 		return amount;
 	}
 

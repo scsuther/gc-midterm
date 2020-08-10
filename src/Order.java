@@ -4,7 +4,7 @@ public class Order extends Product {
 
 	public Order() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Order(int quantity) {
@@ -15,7 +15,7 @@ public class Order extends Product {
 	public Order(int id, String name, String category, String description, double price, int quantity) {
 		super(id, name, category, description, price);
 		this.quantity = quantity;
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public int getQuantity() {

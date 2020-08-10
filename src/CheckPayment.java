@@ -1,12 +1,12 @@
 
-public class Check extends Payment {
+public class CheckPayment extends Payment {
 	private String checkNumber;
 
-	public Check() {
+	public CheckPayment() {
 		super();
 	}
 
-	public Check(double amount, String checkNumber) {
+	public CheckPayment(double amount, String checkNumber) {
 		super(amount);
 		this.checkNumber = checkNumber;
 	}
@@ -21,12 +21,11 @@ public class Check extends Payment {
 
 	@Override
 	public String toString() {
-		return "Check [checkNumber=" + checkNumber + ", amount=" + amount + "]";
+		return "Check Number = " + checkNumber + "\n" + "Amount = $" + amount;
 	}
 
 	@Override
 	double pay(double amount) {
-		// TODO Auto-generated method stub
 
 		return amount;
 	}
