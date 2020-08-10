@@ -20,7 +20,7 @@ public class MidTerm {
 
 		try {
 
-			System.out.println("Welcome to the Grocery store! ");
+			System.out.println("Welcome to the grocery store! ");
 
 			System.out.println("1-See the list of Products");
 			System.out.println("2-Add a Product");
@@ -31,7 +31,7 @@ public class MidTerm {
 
 //				System.out.println("Enter menu number: ");
 //				command = scnr.nextInt();
-				  command = Validator.getPositiveInt(scnr, "Enter menu number: ");
+				command = Validator.getPositiveInt(scnr, "Enter menu number: ");
 				if (command == 3) {
 
 					break;
@@ -41,7 +41,8 @@ public class MidTerm {
 					// listOfProducts();
 					do {
 
-						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
+						Integer itemNumber = Validator.getPositiveInt(scnr,
+								"What item would you like to order? (enter item ID) ");
 
 						while (!isItemExists(itemNumber)) {
 							System.out.println(isItemExists(itemNumber));
@@ -49,20 +50,18 @@ public class MidTerm {
 							System.out.println("Sorry, We don't have those. Please try again. ");
 							printMenu();
 							// listOfProducts();
-							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order?");
+							itemNumber = Validator.getPositiveInt(scnr,
+									"What item would you like to order? (enter item ID) ");
 
 						}
-						Integer enterQuantity = Validator.getPositiveInt(scnr, "Enter quantity");
+						Integer enterQuantity = Validator.getPositiveInt(scnr, "Enter quantity: ");
 
 						addOrderItem(itemNumber, enterQuantity);
 
-						valid = Validator.getYesNo(scnr, "Would you like to order any thing else (y/n)?");
+						valid = Validator.getYesNo(scnr, "Would you like to order any thing else (y/n)? ");
 
 						if (!valid) {
 							System.out.println("Thank you for your order!");
-							System.out.println("Here's what you got.");
-
-
 
 							displayOrderItems(itemNumber);
 
@@ -130,11 +129,9 @@ public class MidTerm {
 	}
 
 	public static void printMenu() {
-		 
 
 		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "Id", "Name", "Category", "Description", "Price");
 		System.out.printf("%-10s%-10s%-10s%-25s%-10s%n", "==", "====", "=======", "=========", "=====");
- 
 
 		for (Map.Entry<Integer, Product> entry : productList.entrySet()) {
 
@@ -145,13 +142,12 @@ public class MidTerm {
 		}
 
 	}
- 
 
 	/**
 	 * Add an object to the end of the file.
 	 */
 	public static void appendLineToFile(Product thing) {
-		String line = "TODO";
+		String line;
 
 		line = thing.getId() + "~~~" + thing.getName() + "~~~" + thing.getCategory() + "~~~" + thing.getDescription()
 				+ "~~~" + thing.getPrice();
@@ -170,13 +166,12 @@ public class MidTerm {
 
 		boolean isItemExistsInproductList = false;
 
-		
 		for (int i = 0; i < orderedProduct.size(); i++) {
 
 			if (orderedProduct.get(i).getId() == itemNumber) {
 				isItemExistsInproductList = true;
 				int quantity = orderedProduct.get(i).getQuantity();
-				
+
 				double price = productList.get(itemNumber).getPrice();
 				quantity = quantity + enterQuantity;
 
@@ -187,15 +182,15 @@ public class MidTerm {
 		}
 
 		if (!isItemExistsInproductList) {
- 
+
 			Order order = new Order(productList.get(itemNumber).getId(), productList.get(itemNumber).getName(),
 					productList.get(itemNumber).getCategory(), productList.get(itemNumber).getDescription(),
 					productList.get(itemNumber).getPrice() * enterQuantity, enterQuantity);
 			orderedProduct.add(order);
 		}
 
-		System.out.println("Adding " + productList.get(itemNumber).getName() + " to productList at $"
-				+ productList.get(itemNumber).getPrice());
+		System.out.println("Adding " + productList.get(itemNumber).getName() + " to your cart at $ "
+				+ productList.get(itemNumber).getPrice() + " each.");
 
 	}
 
@@ -204,7 +199,9 @@ public class MidTerm {
 		double tax = 6;
 		double taxtotal = 0;
 		double grandtotal = 0;
-		System.out.println("Your Order productList Items: ");
+
+		System.out.println("Your current order is: ");
+		System.out.println();
 		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Price", "Quantity");
 		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "=====", "========");
 		// System.out.println("==========================");
@@ -219,19 +216,22 @@ public class MidTerm {
 		grandtotal = subtotal + taxtotal;
 		System.out.println();
 		// System.out.println("subtotal: " + subtotal);
-		System.out.print("subtotal: ");
+		System.out.print("Subtotal: $");
 		System.out.printf("%.2f%n", subtotal);
-		System.out.print("%tax at " + tax + "% : ");
+		System.out.print("Tax at " + tax + "%: ");
 		System.out.printf("%.2f%n", taxtotal);
-		System.out.print("grandtotal: ");
+		System.out.print("Grand Total: $");
 		System.out.printf("%.2f%n", grandtotal);
-		
+		System.out.println();
+		System.out.println("How would you like to pay? (cash, check, or credit): ");
+		// paymentType = scnr.next();
+
 	}
 
 	private static boolean isItemExists(int itemNumber) {
 		boolean isExists = false;
 
-		isExists= productList.containsKey(itemNumber);
+		isExists = productList.containsKey(itemNumber);
 
 		return isExists;
 	}
