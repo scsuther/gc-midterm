@@ -117,8 +117,12 @@ public class Credit extends Payment {
 
 	@Override
 	public String toString() {
-		return "Credit [creditCardNumber=" + creditCardNumber + ", expdate=" + expdate + ", CVV=" + cvv + ", amount="
-				+ amount + "]";
+		
+		String c = String.valueOf(creditCardNumber);
+		String mask=c.replaceAll("[^\\d\\+]", "").replaceAll("\\d(?=\\d{4})", "*");
+		
+		return "Credit [creditCardNumber=" + mask+ ", expdate=" + expdate + ", CVV=" + cvv + ", amount=" + amount
+				+ "]";
 	}
 
 	@Override
