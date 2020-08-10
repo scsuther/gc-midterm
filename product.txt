@@ -1,12 +1,12 @@
 1~~~Apple~~~Fruit~~~Bag of 12~~~4.59
 2~~~Pear~~~Fruit~~~1 lb~~~1.76
 3~~~Banana~~~Fruit~~~1 lb~~~2.29
-4~~~Peach~~~Fruit~~~1 lb~~~3.35
-5~~~Carrot~~~Vegetable~~~1 lb~~~2.05
-6~~~Potato~~~Vegetable~~~1 lb~~~1.05
+4~~~Peach~~~Fruit~~~1 lb~~~3.52
+5~~~Carrot~~~Vegetable~~~1 lb~~~2.03
+6~~~Potato~~~Vegetable~~~1 lb~~~1.07
 7~~~Lettuce~~~Vegetable~~~1 head~~~0.89
 8~~~Onion~~~Vegetable~~~1 lb~~~0.69
 9~~~Ice Cream~~~Sweet~~~1 quart~~~5.99
-10~~~Cookies~~~Sweet~~~1 dozen~~~3.50
-11~~~Donuts~~~Sweet~~~1 dozen~~~6.50
-12~~~Cake~~~Sweet~~~1 medium size~~~8.75
+10~~~Cookies~~~Sweet~~~1 dozen~~~3.51
+11~~~Donuts~~~Sweet~~~1 dozen~~~6.59
+12~~~Cake~~~Sweet~~~1 medium size~~~8.78

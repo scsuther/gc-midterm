@@ -90,8 +90,8 @@ public class POSTerminal {
 					// for menu command 2, user can add a product to the text file
 				} else if (command == 2) {
 					Product Product = getProductFromUser(scnr);
-					System.out.println("Adding " + Product);
-
+					System.out.println("Adding new product to list.");
+					appendLineToFile(Product);
 				} else {
 					System.out.println("Invalid command.");
 				}
@@ -108,7 +108,6 @@ public class POSTerminal {
 
 	// user adds product information here to store in the text file
 	private static Product getProductFromUser(Scanner scnr) {
-		scnr.nextLine();
 
 		int id = productList.size() + 1;
 		String name = Validator.getString(scnr, "Enter Product: ");
@@ -235,7 +234,7 @@ public class POSTerminal {
 		grandtotal = mathRound(grandtotal);
 		System.out.println();
 		System.out.println("Subtotal:  $" + subtotal);
-		System.out.print("Tax at %" + tax + " : $ ");
+		System.out.print("Tax at " + tax + "%: $ ");
 		System.out.printf("%.2f%n", taxtotal);
 		System.out.println("Grand total:  $" + grandtotal);
 		return grandtotal;
@@ -243,8 +242,10 @@ public class POSTerminal {
 
 	// Rounding decimal to 2 places
 	private static double mathRound(double value) {
-		double roundValue = Math.round((value * 100.0) / 100);
+		double roundValue = Math.round((value * 100.0) / 100.0);
 		return roundValue;
+		// BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_UP);
+	        //double salary = bd.doubleValue();
 	}
 
 	private static boolean isItemExists(int itemNumber) {
@@ -254,6 +255,7 @@ public class POSTerminal {
 
 		return isExists;
 	}
+
 	// user selects payment type
 	public static void payType() {
 		payType.put(1, "Cash");
@@ -298,8 +300,8 @@ public class POSTerminal {
 		CashPayment cash = new CashPayment();
 		cash.setAmount(amount);
 
-		double money = Validator.getDouble(scnr, "Amount due: $" + amount);
-	
+		double money = Validator.getDouble(scnr, "Amount due: $" + amount + "\n How much cash are you paying with? ");
+
 		while (money < amount) {
 			System.out.println("Money is not sufficient, please pay $" + amount);
 			System.out.print("Amount due: $" + amount);

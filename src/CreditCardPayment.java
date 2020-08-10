@@ -55,10 +55,10 @@ public class CreditCardPayment extends Payment {
 			scnr.nextLine();
 		}
 		long input = scnr.nextLong();
-		// scnr.nextLine(); // <-- clear entire line to ready for next input
+		// scnr.nextLine(); // <-- clear entire line to get ready for next input
 		return input;
 	}
-
+	// validating the length of credit card number (16 digits) and CVV (3 digits)
 	public static long validateCreditAndCVVNumber(Scanner scnr, String prompt, int maxDigits, String validateMsg) {
 		long input;
 		do {
@@ -69,7 +69,7 @@ public class CreditCardPayment extends Payment {
 		} while (input <= 0 || String.valueOf(input).length() != maxDigits);
 		return input;
 	}
-
+	// validating the expiration date is in the future and in correct format
 	public static String validateExpireDate(Scanner scnr, String prompt) {
 
 		String input = "";
@@ -113,7 +113,7 @@ public class CreditCardPayment extends Payment {
 
 	@Override
 	public String toString() {
-
+		// including mask to hide credit card number except the last 4 digits
 		String ccn = String.valueOf(creditCardNumber);
 		String mask = ccn.replaceAll("[^\\d\\+]", "").replaceAll("\\d(?=\\d{4})", "*");
 
