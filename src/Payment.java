@@ -1,5 +1,4 @@
 
-
 public abstract class Payment {
 
 	double amount;

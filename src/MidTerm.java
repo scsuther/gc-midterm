@@ -228,7 +228,7 @@ public class MidTerm {
 
 			System.out.printf("%-10d%-10s%-10d%-1s%-20.2f%n", order.getId(), order.getName(), order.getQuantity(), "$",
 					order.getPrice());
-			subtotal = mathRound(subtotal + order.getPrice());
+			subtotal = subtotal + order.getPrice();
 		}
 		taxtotal = (subtotal * tax) / 100;
 

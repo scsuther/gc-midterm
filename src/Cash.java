@@ -1,5 +1,4 @@
 
-
 public class Cash extends Payment {
 
 	private double change;

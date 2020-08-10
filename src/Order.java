@@ -1,5 +1,4 @@
 
-
 public class Order extends Product{
 private int quantity;
 	public Order() {
