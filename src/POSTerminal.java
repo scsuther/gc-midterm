@@ -242,10 +242,9 @@ public class POSTerminal {
 
 	// Rounding decimal to 2 places
 	private static double mathRound(double value) {
-		double roundValue = Math.round((value * 100.0) / 100.0);
+		double roundValue = Math.round(value * 100.0) / 100.0;
 		return roundValue;
-		// BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_UP);
-	        //double salary = bd.doubleValue();
+		
 	}
 
 	private static boolean isItemExists(int itemNumber) {
