@@ -4,9 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MidTerm {
@@ -33,8 +30,6 @@ public class MidTerm {
 
 			while (true) {
 
-//				System.out.println("Enter menu number: ");
-//				command = scnr.nextInt();
 				command = Validator.getPositiveInt(scnr, "Enter menu number: ");
 				if (command == 3) {
 
@@ -45,14 +40,16 @@ public class MidTerm {
 
 					do {
 
-						Integer itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order? (Enter item ID)");
+						Integer itemNumber = Validator.getPositiveInt(scnr,
+								"What item would you like to order? (Enter item ID)");
 
 						while (!isItemExists(itemNumber)) {
-							
+
 							System.out.println("Sorry, We don't have those. Please try again. ");
 							printMenu();
 
-							itemNumber = Validator.getPositiveInt(scnr, "What item would you like to order? (Enter item ID)");
+							itemNumber = Validator.getPositiveInt(scnr,
+									"What item would you like to order? (Enter item ID)");
 
 						}
 						Integer enterQuantity = Validator.getPositiveInt(scnr, "Enter quantity: ");
@@ -209,7 +206,7 @@ public class MidTerm {
 		}
 
 		System.out.println("Adding " + productList.get(itemNumber).getName() + " to order at $"
-				+ productList.get(itemNumber).getPrice()+ " each." );
+				+ productList.get(itemNumber).getPrice() + " each.");
 
 	}
 
@@ -220,20 +217,18 @@ public class MidTerm {
 		double grandtotal = 0;
 		System.out.printf("%-10s%-10s%-10s%-10s%n", "Id", "Name", "Quantity", "Price");
 		System.out.printf("%-10s%-10s%-10s%-10s%n", "==", "====", "========", "=====");
-		
 
 		for (Order order : orderedProduct) {
 
 			System.out.printf("%-10d%-10s%-10d%-1s%-20.2f%n", order.getId(), order.getName(), order.getQuantity(), "$",
 					order.getPrice());
 			subtotal = subtotal + order.getPrice();
-			
+
 		}
 		subtotal = mathRound(subtotal);
-		
+
 		taxtotal = (subtotal * tax) / 100;
 
-		
 		grandtotal = subtotal + taxtotal;
 		grandtotal = mathRound(grandtotal);
 		System.out.println();
@@ -289,14 +284,9 @@ public class MidTerm {
 
 		credit.pay(amount);
 		System.out.println(credit.toString());
-	
+
 		System.out.println("Thank you for shopping with us!");
-		
-	
-	
-	
-	
-	
+
 	}
 
 	public static void cash(double amount) {
@@ -304,7 +294,7 @@ public class MidTerm {
 		cash.setAmount(amount);
 
 		double money = Validator.getDouble(scnr, "Amount due: " + amount + " ");
-		//System.out.println("How much cash are you using?");
+		// System.out.println("How much cash are you using?");
 		while (money < amount) {
 			System.out.println("Money is not sufficient, please pay " + amount);
 			System.out.print("Amount due: " + amount + ": ");
@@ -330,7 +320,7 @@ public class MidTerm {
 		check.setCheckNumber(checkNum);
 		System.out.println(check.toString());
 		System.out.println("Thank you for shopping with us!");
-		
+
 	}
 
 }
